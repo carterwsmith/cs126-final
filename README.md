@@ -2,7 +2,7 @@
   <img src="https://i.ibb.co/XXzrs4z/ttlogo2.png" />
 </p>
   
-# Type Tester
+# Type Tester (SPRING 2021)
   
 Type Tester is a Cinder application to practice typing and record your WPM score.
 
