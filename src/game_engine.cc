@@ -31,6 +31,10 @@ GameEngine::GameEngine(std::ifstream& in) {
 }
 
 void GameEngine::NewRound() {
+  if (current_round_.hasStartedTyping_ && !current_round_.isDone_) {
+    return;
+  }
+
   srand(time(nullptr));
   size_t new_prompt_position = rand() % num_prompts_;
 

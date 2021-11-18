@@ -36,11 +36,13 @@ FetchContent_Declare(
         GIT_TAG        v2.11.1
 )
 
-FetchContent_Declare(
-        catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v2.11.1
-)
+# Adds Catch2 testing library
+FetchContent_GetProperties(catch2)
+if(NOT catch2_POPULATED)
+    FetchContent_Populate(catch2)
+    add_library(catch2 INTERFACE)
+    target_include_directories(catch2 INTERFACE ${catch2_SOURCE_DIR}/single_include)
+endif()
 
 get_filename_component(CINDER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../" ABSOLUTE)
 get_filename_component(APP_PATH "${CMAKE_CURRENT_SOURCE_DIR}/" ABSOLUTE)
@@ -54,9 +56,24 @@ list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
         src/typer_app.cc
         src/stopwatch.cc)
 
+list(APPEND TEST_FILES      tests/stopwatch_test.cc
+        tests/round_test.cc)
+
 ci_make_app(
         APP_NAME        typer-app
         CINDER_PATH     ${CINDER_PATH}
         SOURCES         apps/typer_app_main.cc ${SOURCE_FILES}
         INCLUDES        include
 )
+
+ci_make_app(
+        APP_NAME        typer-app-test
+        CINDER_PATH     ${CINDER_PATH}
+        SOURCES         tests/test_main.cc ${SOURCE_FILES} ${TEST_FILES}
+        INCLUDES        include
+        LIBRARIES       catch2
+)
+
+if(MSVC)
+    set_property(TARGET typer-app-test APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:CONSOLE")
+endif()

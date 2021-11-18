@@ -6,7 +6,7 @@ using std::thread;
 namespace typer {
 
 Stopwatch::Stopwatch() {
-  seconds_ = 0;
+  tenth_seconds_ = 0;
   isRunning_ = false;
 }
 
@@ -15,8 +15,8 @@ void Stopwatch::Start() {
   th = thread([=]()
     {
       while (isRunning_) {
-        sleep(1);
-        seconds_++;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        tenth_seconds_++;
       }
     });
 }
@@ -27,7 +27,7 @@ void Stopwatch::Stop() {
 }
 
 size_t Stopwatch::GetTime() const {
-  return seconds_;
+  return tenth_seconds_;
 }
 
 } // namespace typer

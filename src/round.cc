@@ -31,14 +31,14 @@ void Round::UpdateRound(string &input) {
     hasStartedTyping_ = true;
   }
 
-  if (input == next_letter_) {
+  if (input == next_letter_ && !isDone_) {
     next_letter_position_++;
     next_letter_ = prompt_[next_letter_position_];
 
     player_progress_ += input;
   }
 
-  if (IsRoundOver()) {
+  if (IsRoundOver() && !isDone_) {
     EndRound();
   }
 }
@@ -49,8 +49,8 @@ void Round::UpdateWpm() {
     return;
   }
 
-  double wpm = ((double)next_letter_position_ / 5) / ((double)timer_.GetTime() / 60);
-  current_wpm_ = floor(wpm);
+  double wpm = ((double)next_letter_position_ / 5) / ((double)timer_.GetTime() / 600);
+  current_wpm_ = round(wpm);
 }
 
 bool Round::IsRoundOver() {
@@ -63,6 +63,18 @@ bool Round::IsRoundOver() {
 
 string& Round::GetPrompt() {
   return prompt_;
+}
+
+size_t Round::GetWpm() {
+  return current_wpm_;
+}
+
+string& Round::GetProgress() {
+  return player_progress_;
+}
+
+string& Round::GetNextLetter() {
+  return next_letter_;
 }
 
 } // namespace typer
